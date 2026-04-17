@@ -28,19 +28,15 @@ public class TeamService {
         return tmp;
     }
 
-    public TeamMember addUser(MemberInfo member){
-        validateManager(member.userId());
-        return teams.addUser(member.member().teamId(),member.member().userId());
-    }
-    private TeamMember addUser(Long teamId, Long userId){
+    public TeamMember addUser(Long teamId, Long userId){
         validateUser(userId);
         return teams.addUser(teamId,userId);
     }
-    public void deleteUser( MemberInfo member){
-        if (!validateManager(member.userId())) {
+    public void deleteUser(Long teamId, Long managerId, Long user_id){
+        if (!validateManager(managerId)) {
             throw new TeamException("Пользователь должен быть руководителем!");
         }
-        teams.deleteUser(member.member().teamId(),member.member().userId());
+        teams.deleteUser(managerId,user_id);
     }
 
     public TeamResponse getById(Long teamId){
@@ -71,9 +67,9 @@ public class TeamService {
         }
     }
 
-    public Team updateTeam(TeamUpdate team){
+    public Team updateTeam(Long id,TeamUpdate team){
         validateTeam(team);
-        return teams.update(team);
+        return teams.update(id,team);
     }
     private void validateTeam(TeamUpdate team){
         if (team.name().isBlank()) {

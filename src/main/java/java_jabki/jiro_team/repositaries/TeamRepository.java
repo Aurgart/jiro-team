@@ -56,37 +56,44 @@ public class TeamRepository {
     public Team insert(TeamData team) {
         return jdbcTemplate.queryForObject(INSERT, teamParamForSql(team), teamMapper);
     }
-    public Team update(TeamUpdate team) {
-        return jdbcTemplate.queryForObject(UPDATE, teamUpdParamForSql(team), teamMapper);
+
+    public Team update(Long id, TeamUpdate team) {
+        return jdbcTemplate.queryForObject(UPDATE, teamUpdParamForSql(id, team), teamMapper);
     }
-    public Team getById(Long id){
-        return jdbcTemplate.queryForObject(GET_BY_ID,new MapSqlParameterSource("id", id), teamMapper);
+
+    public Team getById(Long id) {
+        return jdbcTemplate.queryForObject(GET_BY_ID, new MapSqlParameterSource("id", id), teamMapper);
     }
-    public TeamMember addUser(Long teamId, Long userId){
+
+    public TeamMember addUser(Long teamId, Long userId) {
         final MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("team_id", teamId);
         params.addValue("user_id", userId);
         return jdbcTemplate.queryForObject(ADD_USER, params, memberMapper);
     }
-    public void deleteUser(Long teamId, Long userId){
+
+    public void deleteUser(Long teamId, Long userId) {
         final MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("team_id", teamId);
         params.addValue("user_id", userId);
         jdbcTemplate.update(DELETE_USER_TEAM, params);
     }
-    public List<TeamMember> getByTeam(Long id){
+
+    public List<TeamMember> getByTeam(Long id) {
         return jdbcTemplate.query(GET_USER_TEAM, new MapSqlParameterSource("team_id", id), memberMapper);
     }
 
 
-    public MapSqlParameterSource teamParamForSql(TeamData team) {
+    private MapSqlParameterSource teamParamForSql(TeamData team) {
         final MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("name", team.name());
         params.addValue("owner_id", team.ownerId());
         return params;
     }
-    public MapSqlParameterSource teamUpdParamForSql(TeamUpdate team) {
+
+    private MapSqlParameterSource teamUpdParamForSql(Long id, TeamUpdate team) {
         final MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("id", team.name());
         params.addValue("name", team.name());
         params.addValue("owner_id", team.ownerId());
         return params;

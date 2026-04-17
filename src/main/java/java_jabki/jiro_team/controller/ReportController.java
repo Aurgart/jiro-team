@@ -22,7 +22,7 @@ public class ReportController {
 
     @PatchMapping
     @Operation(summary = "Получить отчет по команде")
-    public ReportInfo updateTeam(@RequestBody ReportData rep) {
+    public ReportInfo getReport(@RequestBody ReportData rep) {
         return reports.getTeamReport(rep);
     }
 }

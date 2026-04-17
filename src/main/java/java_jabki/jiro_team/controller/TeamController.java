@@ -2,8 +2,13 @@ package java_jabki.jiro_team.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java_jabki.jiro_team.model.*;
-import java_jabki.jiro_team.model.teams.*;
+import java_jabki.jiro_team.model.MemberInfo;
+import java_jabki.jiro_team.model.UserTaskList;
+import java_jabki.jiro_team.model.teams.TeamData;
+import java_jabki.jiro_team.model.teams.TeamResponse;
+import java_jabki.jiro_team.model.teams.Team;
+import java_jabki.jiro_team.model.teams.TeamMember;
+import java_jabki.jiro_team.model.teams.TeamUpdate;
 import java_jabki.jiro_team.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,25 +24,37 @@ public class TeamController {
 
     @PostMapping
     @Operation(summary = "Создать команду")
-    public TeamResponse create(@RequestBody TeamData team){ return teams.addTeam(team); }
+    public TeamResponse create(@RequestBody TeamData team) {
+        return teams.addTeam(team);
+    }
 
     @GetMapping("/{id}")
     @Operation(summary = "Команду по ид")
-    public TeamResponse getById(@PathVariable("id") Long id){ return teams.getById(id); }
+    public TeamResponse getById(@PathVariable("id") Long id) {
+        return teams.getById(id);
+    }
 
-    @PatchMapping
+    @PatchMapping("/{id}/update")
     @Operation(summary = "Обновить информацию по команде")
-    public Team updateTeam(@RequestBody TeamUpdate team) {return teams.updateTeam(team);}
+    public Team updateTeam(@PathVariable("id") Long id, @RequestBody TeamUpdate team) {
+        return teams.updateTeam(id, team);
+    }
 
-    @PostMapping("/member")
+    @PostMapping("/{id}/member")
     @Operation(summary = "Добавить сотрудника в команду")
-    public TeamMember addMember(@RequestBody MemberInfo member){ return teams.addUser(member);}
+    public TeamMember addMember(@PathVariable("id") Long id, @RequestParam(required = true) Long userId) {
+        return teams.addUser(id, userId);
+    }
 
-    @DeleteMapping("/member/del")
+    @DeleteMapping("/{id}/member/del")
     @Operation(summary = "Убрать сотрудника из команды")
-    public void delMember(@RequestBody MemberInfo member){ teams.deleteUser(member);}
+    public void delMember(@PathVariable("id") Long id, @RequestParam(required = true) Long managerId, @RequestParam(required = true) Long userId) {
+        teams.deleteUser(id,managerId,userId);
+    }
 
-    @GetMapping("/task_list/{id}")
+    @GetMapping("/{id}/tasks")
     @Operation(summary = "Задачи команды по ид")
-    public List<UserTaskList> getTaskListByTeamId(@PathVariable("id") Long id){ return teams.getTeamUsersTasks(id); }
+    public List<UserTaskList> getTaskListByTeamId(@PathVariable("id") Long id) {
+        return teams.getTeamUsersTasks(id);
+    }
 }
