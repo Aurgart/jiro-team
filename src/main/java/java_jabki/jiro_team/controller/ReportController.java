@@ -21,7 +21,7 @@ public class ReportController {
     private final TeamReportService reports;
 
     @PatchMapping
-    @Operation(summary = "Обновить информацию по команде")
+    @Operation(summary = "Получить отчет по команде")
     public ReportInfo updateTeam(@RequestBody ReportData rep) {
         return reports.getTeamReport(rep);
     }
